@@ -97,9 +97,33 @@ class Fetcher:
         time.sleep(random.uniform(0.5, 1.5))
         
         try:
-            response = self.session.get(url, headers=headers, timeout=15)
+            # Use stream=True to inspect headers before downloading full content
+            response = self.session.get(url, headers=headers, timeout=15, stream=True)
+            
             if response.status_code == 200:
-                return response.text, response.status_code
+                # 1. Validate Content-Type header
+                content_type = response.headers.get('Content-Type', '').lower()
+                if 'text/html' not in content_type:
+                    Actor.log.warning(f"Skipping non-HTML content: {url} ({content_type})")
+                    response.close()
+                    return None, 0
+                
+                # 2. Validate content data
+                try:
+                    content = response.content
+                    text_content = content.decode('utf-8', errors='replace')
+                    
+                    # Basic HTML signature check
+                    if not re.search(r'<html|<!DOCTYPE html|<body|<head', text_content, re.IGNORECASE):
+                        Actor.log.warning(f"Skipping content that doesn't look like HTML: {url}")
+                        return None, 0
+                        
+                    return text_content, response.status_code
+                except Exception as e:
+                    Actor.log.error(f"Error processing content for {url}: {e}")
+                    return None, 0
+            
+            response.close()
             return None, response.status_code
         except requests.exceptions.RequestException as e:
             Actor.log.error(f"Failed to fetch {url}: {e}")
@@ -312,8 +336,11 @@ class ScraperApp:
                 
                 if html:
                     await self.cache.save(url, html, status)
+                elif status == 0:
+                    # Status 0 usually means we skipped it intentionally (non-html, etc) or network error handled in fetch
+                    pass 
                 else:
-                    Actor.log.error(f"Failed to fetch: {url}")
+                    Actor.log.error(f"Failed to fetch: {url} (Status: {status})")
 
             # Parse and Push Data
             if html:
