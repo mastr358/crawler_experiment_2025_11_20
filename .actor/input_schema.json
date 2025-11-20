@@ -19,7 +19,7 @@
       "title": "Crawl Links",
       "type": "boolean",
       "description": "Whether to follow links and crawl additional pages",
-      "default": false
+      "default": true
     },
     "pattern": {
       "title": "URL Pattern (Regex)",

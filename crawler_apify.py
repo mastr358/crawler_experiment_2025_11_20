@@ -270,7 +270,7 @@ class ScraperApp:
              Actor.log.warning("startUrls provided but no valid URLs found.")
              return
 
-        crawl = self.config.get('crawl', False)
+        crawl = self.config.get('crawl', True)
         pattern = self.config.get('pattern', None)
         force = self.config.get('refresh', False)
         
@@ -323,8 +323,8 @@ class ScraperApp:
                 await Actor.push_data({
                     "url": url,
                     "title": title,
-                    "markdown": markdown,
-                    "crawledAt": datetime.now().isoformat()
+                    "content": markdown,
+                    "crawled_at": datetime.now().isoformat()
                 })
                 
                 # Crawl Logic
