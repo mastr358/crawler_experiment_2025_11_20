@@ -1,0 +1,25 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "url": { "type": "string", "description": "The URL of the page" },
+        "title": { "type": "string", "description": "The title of the page" },
+        "markdown": { "type": "string", "description": "The content converted to Markdown" },
+        "crawledAt": { "type": "string", "format": "date-time", "description": "Timestamp of crawl" }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": ["title", "url", "crawledAt"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "title": { "label": "Title", "format": "text" },
+                    "url": { "label": "URL", "format": "link" },
+                    "crawledAt": { "label": "Crawled At", "format": "date" }
+                }
+            }
+        }
+    }
+}

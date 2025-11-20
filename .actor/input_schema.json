@@ -1,0 +1,38 @@
+{
+  "title": "Web Crawler to Markdown Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {
+      "title": "Start URLs",
+      "type": "array",
+      "description": "List of URLs to start crawling from",
+      "editor": "requestListSources",
+      "example": [
+        { "url": "https://example.com" }
+      ],
+      "prefill": [
+        { "url": "https://example.com" }
+      ]
+    },
+    "crawl": {
+      "title": "Crawl Links",
+      "type": "boolean",
+      "description": "Whether to follow links and crawl additional pages",
+      "default": false
+    },
+    "pattern": {
+      "title": "URL Pattern (Regex)",
+      "type": "string",
+      "description": "Optional regex pattern to filter which URLs to crawl",
+      "editor": "textfield"
+    },
+    "refresh": {
+      "title": "Force Refresh",
+      "type": "boolean",
+      "description": "Force re-fetch even if pages are cached",
+      "default": false
+    }
+  },
+  "required": ["startUrls"]
+}
